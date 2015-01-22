@@ -18894,9 +18894,11 @@ if test "${with_libpcap+set}" = set; then :
             if test $dynamic_link = yes; then
                 for ext in .dylib .so ; do
                     if test -f "${withval}/libpcap${ext}" ; then
-                        LPCAPLIB="-L${withval}/ -lpcap"
+                        LPCAPLIB="-lpcap"
                     elif test -f "${withval}/lib/libpcap${ext}" ; then
-                        LPCAPLIB="-L${withval}/lib/ -lpcap"
+                        LPCAPLIB="-lpcap"
+                    elif test -f "${withval}/lib64/libpcap${ext}" ; then
+                        LPCAPLIB="-lpcap"
                     fi
                 done
                 if test "x$LPCAPLIB" == "x" ; then
@@ -19149,14 +19151,13 @@ fi
 fi
 
 OLDLIBS="$LIBS"
-OLDCFLAGS="$CFLAGS -I$LPCAPINCDIR"
+OLDCFLAGS="$CFLAGS"
 if test $pf_ring_found = yes ; then
     LIBS="$LPCAPLIB ${foundpcap}/../lib/libpfring.a -lnuma -lpthread -lrt"
     LPCAPLIB=$LIBS
 else
     LIBS="$LPCAPLIB"
 fi
-CFLAGS="$CFLAGS -I$LPCAPINCDIR"
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing pcap_get_pfring_id" >&5
 $as_echo_n "checking for library containing pcap_get_pfring_id... " >&6; }
 if test "${ac_cv_search_pcap_get_pfring_id+set}" = set; then :

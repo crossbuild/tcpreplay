@@ -430,9 +430,11 @@ AC_ARG_WITH(libpcap,
             if test $dynamic_link = yes; then
                 for ext in .dylib .so ; do 
                     if test -f "${withval}/libpcap${ext}" ; then
-                        LPCAPLIB="-L${withval}/ -lpcap"
+                        LPCAPLIB="-lpcap"
                     elif test -f "${withval}/lib/libpcap${ext}" ; then
-                        LPCAPLIB="-L${withval}/lib/ -lpcap"
+                        LPCAPLIB="-lpcap"
+                    elif test -f "${withval}/lib64/libpcap${ext}" ; then
+                        LPCAPLIB="-lpcap"
                     fi
                 done
                 if test "x$LPCAPLIB" == "x" ; then
@@ -541,14 +543,13 @@ fi
 
 dnl Checks to see what version of libpcap we've got
 OLDLIBS="$LIBS"
-OLDCFLAGS="$CFLAGS -I$LPCAPINCDIR"
+OLDCFLAGS="$CFLAGS"
 if test $pf_ring_found = yes ; then
     LIBS="$LPCAPLIB ${foundpcap}/../lib/libpfring.a -lnuma -lpthread -lrt"
     LPCAPLIB=$LIBS
 else
     LIBS="$LPCAPLIB"
 fi
-CFLAGS="$CFLAGS -I$LPCAPINCDIR"
 AC_SEARCH_LIBS([pcap_get_pfring_id], [pcap], AC_DEFINE([HAVE_PF_RING_PCAP], [1], [Do we have PF_RING libpcap support?]))
 
 dnl Does libpcap require libnl?
